@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// user
+model User {
+  id          String  @id       @default(uuid())
+  username    String  @unique 
+  email       String  @unique
+  password    String
+
+  // relation (TODO LISTS)here
+  // todoLists[]
+  // tweets[]
+
+}
+
+// todo list
+model TodoList {
+   id      String  @id  @default(uuid())
+   Title String
+   completed Boolean
+   StartTime DateTime
+   EndTime DateTime
+
+   //relations 
+   // user Id 
+   // todos[]
+   // tweet?
+}
+
+// todos
+model Tasks {
+  id  String @id @default(uuid())
+  title String
+  description String?
+  completed Boolean
+  startTime DateTime
+  endTime DateTime
+
+// relation 
+// List Id Its related to 
+}
+
+//tweets or posts 
+
+model Posts {
+id String @id @default(uuid())
+description String 
+postedAt DateTime
+
+// relation 
+// posted by user Id 
+// Todo list completed Id
+}
