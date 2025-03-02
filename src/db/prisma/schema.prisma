@@ -21,8 +21,8 @@ model User {
   password    String
 
   // relation (TODO LISTS)here
-  // todoLists[]
-  // tweets[]
+  todoLists   TodoList[] 
+  posts       Posts[]
 
 }
 
@@ -30,14 +30,15 @@ model User {
 model TodoList {
    id      String  @id  @default(uuid())
    Title String
-   completed Boolean
-   StartTime DateTime
+   completed Boolean @default(false)
+   StartTime DateTime @default(now())
    EndTime DateTime
-
+   creatorId String
+  
    //relations 
-   // user Id 
-   // todos[]
-   // tweet?
+   creator User  @relation(fields: [creatorId], references: [id])
+   tasks  Tasks[]
+   Post  Posts?
 }
 
 // todos
@@ -45,12 +46,12 @@ model Tasks {
   id  String @id @default(uuid())
   title String
   description String?
-  completed Boolean
-  startTime DateTime
+  completed Boolean @default(false)
+  startTime DateTime @default(now())
   endTime DateTime
-
+  ListId String
 // relation 
-// List Id Its related to 
+  List TodoList @relation(fields: [ListId], references: [id])
 }
 
 //tweets or posts 
@@ -59,8 +60,9 @@ model Posts {
 id String @id @default(uuid())
 description String 
 postedAt DateTime
-
+posterId String
+TodoId String @unique
 // relation 
-// posted by user Id 
-// Todo list completed Id
+User User @relation(fields: [posterId], references: [id])
+Todo TodoList @relation(fields: [TodoId], references: [id])
 }
