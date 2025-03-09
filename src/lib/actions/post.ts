@@ -2,6 +2,7 @@
 import prisma from "@/db";
 import { getServerSession } from "next-auth";
 import authOptions from "./authOptions";
+import axios from "axios";
 
 
 export async function CreatePost( listId: string, description? : string) {
@@ -43,9 +44,13 @@ export async function CreatePost( listId: string, description? : string) {
         
 
         if (!description) {
-            description = `Completed ${tasks?.length} of my list ${title}. These included ${tasks?.map((t)=> {
-                t.description
-            })}`
+            // description = `Completed ${tasks?.length} of my list ${title}. These included ${tasks?.map((t)=> {
+            //     t.description
+            // })}`
+
+            // replace this with prod url
+         const res = await axios.post("http://127.0.0.1:8000/gen-tweet") as {tweet : string}
+         description = res.tweet; 
         }
  
         if(!res?.completed){

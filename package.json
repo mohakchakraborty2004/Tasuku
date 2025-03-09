@@ -12,6 +12,7 @@
     "@prisma/client": "^6.4.1",
     "@prisma/extension-accelerate": "^1.2.2",
     "@types/bcrypt": "^5.0.2",
+    "axios": "^1.8.2",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "next": "14.2.3",
