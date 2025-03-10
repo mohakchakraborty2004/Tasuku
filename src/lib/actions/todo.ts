@@ -1,4 +1,6 @@
+"use server"
 // list and tasks 
+
 import prisma from "@/db";
 import { getServerSession } from "next-auth";
 import authOptions from "./authOptions";

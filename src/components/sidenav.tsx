@@ -11,22 +11,22 @@ export default function SidebarDemo() {
     {
       label: "Home",
       href: "/home",
-      icon: <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />,
+      icon: <IconBrandTabler className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />,
+      icon: <IconUserBolt className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },
     {
       label: "Settings",
       href: "/profile",
-      icon: <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />,
+      icon: <IconSettings className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },
     {
       label: "Logout",
       href: "#",
-      icon: <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 shrink-0" />,
+      icon: <IconArrowLeft className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },
   ]
   const [open, setOpen] = useState(false)
@@ -66,12 +66,12 @@ export default function SidebarDemo() {
 
 export const Logo = () => {
   return (
-    <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-      <div className="h-5 w-6 bg-red-800 dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm shrink-0" />
+    <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20">
+      <div className="h-5 w-6 bg-white dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm shrink-0" />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
+        className="font-medium text-white dark:text-white whitespace-pre"
       >
         Tasuku
       </motion.span>
@@ -82,7 +82,7 @@ export const Logo = () => {
 export const LogoIcon = () => {
   return (
     <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm shrink-0" />
+      <div className="h-5 w-6 bg-white dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm shrink-0" />
     </Link>
   )
 }
