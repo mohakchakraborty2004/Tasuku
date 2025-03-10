@@ -10,7 +10,7 @@ providers : [
  CredentialsProvider({
     name : 'credentials', 
     credentials : {
-        email: { label: "email", type: "text", placeholder: "samyakhorny@horny.com", required: true },
+        email: { label: "email", type: "text", placeholder: "peterparker@dailybugle.co.us", required: true },
         password: { label: "Password", type: "password", required: true },
         username : { label: "name", type: "text"}
     } ,

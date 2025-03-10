@@ -11,15 +11,23 @@
   "dependencies": {
     "@prisma/client": "^6.4.1",
     "@prisma/extension-accelerate": "^1.2.2",
+    "@tabler/icons-react": "^3.31.0",
     "@types/bcrypt": "^5.0.2",
     "axios": "^1.8.2",
     "bcrypt": "^5.1.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
+    "framer-motion": "^12.4.10",
+    "lucide-react": "^0.479.0",
+    "motion": "^12.4.10",
     "next": "14.2.3",
     "next-auth": "^4.24.11",
     "prisma": "^6.4.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@types/node": "^20",
