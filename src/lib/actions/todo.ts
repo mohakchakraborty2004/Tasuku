@@ -10,7 +10,7 @@ import authOptions from "./authOptions";
 export async function createList(title : string) {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id 
-
+    const endtime = "endtime"
     if (!userId) {
         return {
             msg : "invalid access please login"
@@ -22,7 +22,7 @@ export async function createList(title : string) {
         const ActiveList = await prisma.todoList.findFirst({
             where : {
                 creatorId : userId,
-                completed : true
+                completed : false
             } 
         })
 
@@ -35,7 +35,7 @@ export async function createList(title : string) {
         const response = await prisma.todoList.create({
             data :{
                 Title : title,
-                EndTime : "null", // find a way to improve 
+                EndTime : endtime, // find a way to improve 
                 creatorId : userId
             }
         })

@@ -1,6 +1,7 @@
 import authOptions from "@/lib/actions/authOptions"
 import { getServerSession } from "next-auth"
 import prisma from "@/db";
+import ListMaker from "./createTodo";
 
 async function getUser(userId : string){
   const res = await prisma.user.findFirst({
@@ -30,7 +31,10 @@ export default async function Dash() {
                 <h1 className="font-bold text-[1rem] ml-3">
                     {user?.email}
                 </h1>
+            
             </div>
+
+            <ListMaker></ListMaker>
 
         </div>
     </div>
