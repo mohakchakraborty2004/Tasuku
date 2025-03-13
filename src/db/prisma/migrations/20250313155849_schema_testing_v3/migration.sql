@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Tasks" ALTER COLUMN "endTime" SET DATA TYPE TEXT;

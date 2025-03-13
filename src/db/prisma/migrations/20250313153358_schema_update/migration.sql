@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "TodoList" ALTER COLUMN "EndTime" DROP NOT NULL;

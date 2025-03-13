@@ -32,7 +32,7 @@ model TodoList {
    Title String
    completed Boolean @default(false)
    StartTime DateTime @default(now())
-   EndTime DateTime
+   EndTime String
    creatorId String
   
    //relations 
@@ -48,7 +48,7 @@ model Tasks {
   description String?
   completed Boolean @default(false)
   startTime DateTime @default(now())
-  endTime DateTime
+  endTime String
   ListId String
 // relation 
   List TodoList @relation(fields: [ListId], references: [id])
