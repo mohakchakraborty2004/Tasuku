@@ -19,7 +19,7 @@ export default function SidebarDemo() {
       icon: <IconUserBolt className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },
     {
-      label: "Settings",
+      label: "Manage Todos",
       href: "/profile",
       icon: <IconSettings className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },

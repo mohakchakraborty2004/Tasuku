@@ -19,8 +19,9 @@ export default async function Dash() {
     
     const user = await getUser(userId);
 
-    return <div className="p-20">
+    return <div className="p-20 flex flex-col">
         <div className="flex gap-2">
+
             <div className="h-40 w-40 bg-slate-900 rounded-full row-span-1">
             </div>
 
@@ -31,11 +32,13 @@ export default async function Dash() {
                 <h1 className="font-bold text-[1rem] ml-3">
                     {user?.email}
                 </h1>
-            
             </div>
 
-            <ListMaker></ListMaker>
-
         </div>
+
+        <div>
+            Graph Here. 
+        </div>
+
     </div>
 }

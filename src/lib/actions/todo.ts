@@ -28,7 +28,8 @@ export async function createList(title : string) {
 
         if (ActiveList) {
             return {
-                msg : "One list Already exists, finish before creating another"
+                msg : "One list Already exists, finish before creating another",
+                id : ActiveList.id
             }
         }
 
@@ -59,6 +60,8 @@ export async function createList(title : string) {
 export async function addTask(title : string, listId : string ,description? : string) {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id 
+
+    console.log(listId)
 
     if (!userId) {
         return {
