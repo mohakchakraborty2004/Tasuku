@@ -1,10 +1,11 @@
 "use client";
 
-import { addTask, createList, fetchActive } from "@/lib/actions/todo";
-import { use, useEffect, useState } from "react";
+import { addTask, createList, deleteTask, fetchActive, updateTask } from "@/lib/actions/todo";
+import {  useEffect, useState } from "react";
 
 export default function ListMaker() {
 
+    // I honestly need to learn state management fr.
     const [title, setTitle] = useState<string>("")
     const [fetchT, setFetchT] = useState<string>("")
     const [id, setId] = useState<string>("")
@@ -13,7 +14,10 @@ export default function ListMaker() {
     const [task, setTask] = useState<string>("")
     const [isLoading, setLoading] = useState<boolean>(false)
     const [isLoading1, setLoading1] = useState<boolean>(false)
+    const [refresh, setRefresh] = useState<boolean>(false)
     const [fetchTask, setFetchTask] = useState<any[]>([])
+    const [completed, setCompleted] = useState<boolean>(false)
+    const [deletingTasks, setDeletingTasks] = useState<any>({});
 
     useEffect(() => {
         async function fetch() {
@@ -24,13 +28,13 @@ export default function ListMaker() {
             if (res.title) setFetchT(res.title)
 
             const tasks = res.tasks
-            const titles = tasks?.map(t => t.title);
-
-            if (titles) setFetchTask(titles);
-
+            // const titles = tasks?.map(t => t.title);
+            // if (titles) setFetchTask(titles);
+            if (tasks) setFetchTask(tasks)
+            setCompleted(false)
         }
         fetch()
-    }, [mssg])
+    }, [mssg, completed])
 
 
     return (
@@ -83,32 +87,63 @@ export default function ListMaker() {
                         disabled={isLoading}
                     >{isLoading ? 'adding Task' : 'Add Task'}</button>
                     <p className="text-red-800 m-1">*the task you add gets added to the active list/recently created list automatically</p>
-                    {msg && (
+                    {mssg && (
                         <div className="font-medium m-2">
                             <span className="text-green-900">{mssg}</span>
                         </div>
                     )}
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col"> 
+                    <div className="flex gap-3 justify-between">
                     <h1 className="text-black font-bold text-3xl">Your Active List and Tasks</h1>
-                    <div className=" bg-black text-white flex flex-col w-auto gap-3 p-6 rounded-2xl m-3">
+                    <button className="bg-blue-900 text-white p-2 rounded-3xl">Refresh</button>
+                    </div>
+                    
+                    <div className=" bg-black text-white flex flex-col w-auto gap-3 p-6 rounded-2xl my-6">
                         <h1 className="font-extrabold text-3xl text-yellow-600">{fetchT}</h1>
-                        {fetchTask.map((task, index) => (
+                        {fetchTask.map((task) => (
                             <div>
-                                <div key={index} className="flex gap-2 m-1" >
+                                <div key={task.id} className="flex gap-2 m-1 justify-between items-center" >
+                                    <div  className="flex gap-2 m-1" >
                                     <input
                                         type="checkbox"
-                                        checked={task.completed}
-                                        onChange={() => { }}
+                                        // checked={}
+                                        onChange={async() => {
+                                            const res = await updateTask(task.id);
+                                            console.log(res.msg);
+                                            setCompleted(true)
+                                         }}
                                     />
-                                    <h3>{task}</h3>
+                                    <h3>{task.title}</h3>
+                                    </div>
+                                   
+                                    <div> {task.completed ? <div className="font-bold text-green-600">completed</div> : <div className="font-bold text-red-600">incomplete</div>}</div>
+                                    <div>
+                                        <button className="bg-red-700 text-white p-1 w-20 rounded-lg font-bold"
+                                        onClick={async()=> {
+                                            setDeletingTasks((prev : any) => ({ ...prev, [task.id]: true }));
+                                            const res = await deleteTask(task.id)
+                                            console.log(res.msg)
+                                            setCompleted(true)
+                                            setDeletingTasks((prev : any) => ({ ...prev, [task.id]: false }));
+                                        }}
+                                        >{deletingTasks[task.id] ? "Deleting" : "Delete"}</button>
+                                    </div>
                                 </div>
                             </div>
 
                         ))}
                     </div>
-                    <button  className="bg-green-700 text-white p-3 rounded-2xl font-bold" >Complete</button>
+                    <div className="flex gap-3 justify justify-center">
+                    <button  className="bg-green-700 text-white p-3 rounded-lg font-bold w-80" >Complete</button>
+                    <button className="bg-red-700 text-white p-3 rounded-lg font-bold w-80"
+                    onChange={()=> {
+
+                    }}
+                     >delete</button>
+                    </div>
+                   
                 </div>
 
 

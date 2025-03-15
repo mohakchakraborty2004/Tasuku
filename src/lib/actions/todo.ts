@@ -240,7 +240,7 @@ export async function updateTask(TaskId :string) {
         })
 
         return {
-            msg  : "list updated",
+            msg  : "Task updated",
             response
         }
     } catch (error) {
