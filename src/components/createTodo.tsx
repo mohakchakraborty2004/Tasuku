@@ -14,6 +14,7 @@ export default function ListMaker() {
     const [task, setTask] = useState<string>("")
     const [isLoading, setLoading] = useState<boolean>(false)
     const [isLoading1, setLoading1] = useState<boolean>(false)
+    // will do this : 
     const [refresh, setRefresh] = useState<boolean>(false)
     const [fetchTask, setFetchTask] = useState<any[]>([])
     const [completed, setCompleted] = useState<boolean>(false)

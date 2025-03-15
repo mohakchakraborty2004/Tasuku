@@ -1,8 +1,13 @@
 import authOptions from "@/lib/actions/authOptions"
 import { getServerSession } from "next-auth"
 import Dash from "@/components/dashboard"
+import { redirect } from "next/navigation";
 
-export default function dashboard() {
+export default async function dashboard() {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+        redirect('api/auth/signin');
+    }
 
     return (
         <div className="flex bg-[#ede2bf] w-full">
