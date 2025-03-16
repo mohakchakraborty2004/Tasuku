@@ -5,6 +5,7 @@ import { IconArrowLeft, IconBrandTabler, IconSettings, IconUserBolt } from "@tab
 import Link from "next/link"
 import { motion } from "motion/react"
 import Image from "next/image"
+import TaskukuLogo from "./tasuku-logo"
 
 export default function SidebarDemo() {
   const links = [
@@ -67,7 +68,7 @@ export default function SidebarDemo() {
 export const Logo = () => {
   return (
     <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-white py-1 relative z-20">
-      <div className="h-5 w-6 bg-white dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm shrink-0" />
+      <TaskukuLogo></TaskukuLogo>
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -82,7 +83,7 @@ export const Logo = () => {
 export const LogoIcon = () => {
   return (
     <Link href="#" className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-      <div className="h-5 w-6 bg-white dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm shrink-0" />
+       <TaskukuLogo></TaskukuLogo>
     </Link>
   )
 }

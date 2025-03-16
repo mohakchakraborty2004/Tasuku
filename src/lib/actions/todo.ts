@@ -180,6 +180,50 @@ export async function allLists() {
     }
 }
 
+export async function completedLists() {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id 
+
+    if (!userId) {
+        return {
+            msg : "invalid access please login"
+        }
+    }
+
+    try {
+        const Lists = await prisma.todoList.findFirst({
+            where : {
+                creatorId : userId,
+                completed : true
+            } ,
+            select : {
+                tasks : true,
+                EndTime : true
+            }
+        })
+
+        const tasks = Lists?.tasks
+        const completedTasks = tasks?.filter(t => t.completed)
+
+
+            return {
+                msg: "fetched",
+                EndTime: Lists?.EndTime ? new Date(Lists.EndTime) : null, // Convert to Date
+                completedTasks: completedTasks?.length,
+                TotalTasks: tasks?.length
+            };
+            
+       
+    } catch (error) {
+        console.log (error); 
+        return {
+            msg : "some error occurred", 
+            status : 502
+        }
+    }
+}
+
+
 // updating todos and lists 
 
 // when called on frontend send listId with it

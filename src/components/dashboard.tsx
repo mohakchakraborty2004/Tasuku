@@ -2,6 +2,7 @@ import authOptions from "@/lib/actions/authOptions"
 import { getServerSession } from "next-auth"
 import prisma from "@/db";
 import ListMaker from "./createTodo";
+import Graph from "./graph";
 
 async function getUser(userId : string){
   const res = await prisma.user.findFirst({
@@ -36,8 +37,8 @@ export default async function Dash() {
 
         </div>
 
-        <div>
-            Graph Here. 
+        <div className="mt-10">
+            <Graph></Graph>
         </div>
 
     </div>

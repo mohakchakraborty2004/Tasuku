@@ -1,7 +1,8 @@
 "use client";
 
-import { addTask, createList, deleteTask, fetchActive, updateTask } from "@/lib/actions/todo";
+import { addTask, createList, deleteTask, fetchActive, updateList, updateTask } from "@/lib/actions/todo";
 import {  useEffect, useState } from "react";
+import Complete from "./completeListBtn";
 
 export default function ListMaker() {
 
@@ -19,6 +20,11 @@ export default function ListMaker() {
     const [fetchTask, setFetchTask] = useState<any[]>([])
     const [completed, setCompleted] = useState<boolean>(false)
     const [deletingTasks, setDeletingTasks] = useState<any>({});
+    // const [isId , setIsId] = useState<boolean>(false)
+
+    // if(id) {
+    //     setIsId(true)
+    // }
 
     useEffect(() => {
         async function fetch() {
@@ -137,8 +143,11 @@ export default function ListMaker() {
                         ))}
                     </div>
                     <div className="flex gap-3 justify justify-center">
-                    <button  className="bg-green-700 text-white p-3 rounded-lg font-bold w-80" >Complete</button>
+                    
+                    <Complete id={id}></Complete>
+               
                     <button className="bg-red-700 text-white p-3 rounded-lg font-bold w-80"
+                    // disabled={isId}
                     onChange={()=> {
 
                     }}
