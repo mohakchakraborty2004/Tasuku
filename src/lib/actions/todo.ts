@@ -113,8 +113,18 @@ export async function fetchActive() {
             select : {
                 id : true,
                 Title : true,
-                tasks : true
-            }
+                tasks : {
+                    orderBy : {
+                        startTime : 'desc'
+                    }
+                }
+            } 
+        })
+
+        console.log({
+            title : response?.Title,
+            id : response?.id,
+            tasks : response?.tasks // array of tasks type
         })
 
         // return in better format 
@@ -215,7 +225,8 @@ export async function completedLists() {
             select : {
                 tasks : true,
                 EndTime : true
-            }
+            }, 
+            
         })
 
         const result = Lists.map(list => {

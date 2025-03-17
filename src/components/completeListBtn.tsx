@@ -1,6 +1,6 @@
 "use client"
 
-import { CreatePost } from "@/lib/actions/post";
+import { CreatePost, } from "@/lib/actions/post";
 import { updateList } from "@/lib/actions/todo";
 import { useState } from "react";
 

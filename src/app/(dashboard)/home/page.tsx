@@ -10,7 +10,7 @@ export default async function profile() {
         redirect('api/auth/signin');
       }
     return (
-        <div className="bg-[#ede2bf]">
+        <div className="bg-[#ede2bf] w-full">
            <Feed></Feed>
         </div>
     )

@@ -5,6 +5,12 @@ import prisma from "@/db";
 import { getServerSession } from "next-auth";
 import authOptions from "./authOptions";
 import axios from "axios";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const AGENT_URL = process.env.AGENT_URL;
+
 
 
 export async function CreatePost( listId: string, description? : string) {
@@ -20,7 +26,7 @@ export async function CreatePost( listId: string, description? : string) {
 
     try {
 
-
+        
 
         const res = await prisma.todoList.findUnique({
             where : {
@@ -68,7 +74,7 @@ export async function CreatePost( listId: string, description? : string) {
         if (findPost) {
             if (!description) {
                 // replace this with prod url
-             const res = await axios.post("http://127.0.0.1:8000/gen-tweet", data) 
+             const res = await axios.post(`${AGENT_URL}/gen-tweet`, data) 
              console.log("response :", res.data)
              description = res.data.tweet; 
             }
@@ -92,7 +98,7 @@ export async function CreatePost( listId: string, description? : string) {
         
 
         if (!description) {
-         const res = await axios.post("http://127.0.0.1:8000/gen-tweet", data) 
+         const res = await axios.post(`${AGENT_URL}/gen-tweet`, data) 
          console.log("response :", res.data)
          description = res.data.tweet; 
         }

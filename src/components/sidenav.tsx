@@ -4,8 +4,9 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
 import { IconArrowLeft, IconBrandTabler, IconSettings, IconUserBolt } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "motion/react"
-import Image from "next/image"
+import { signOut } from "next-auth/react"
 import TaskukuLogo from "./tasuku-logo"
+import { redirect } from "next/navigation"
 
 export default function SidebarDemo() {
   const links = [
@@ -24,11 +25,11 @@ export default function SidebarDemo() {
       href: "/todo",
       icon: <IconSettings className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },
-    {
-      label: "Logout",
-      href: "#",
-      icon: <IconArrowLeft className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
-    },
+    // {
+    //   label: "Logout",
+    //   href: "/",
+    //   icon: <IconArrowLeft className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
+    // },
   ]
   const [open, setOpen] = useState(false)
 
@@ -41,6 +42,16 @@ export default function SidebarDemo() {
             {links.map((link, idx) => (
               <SidebarLink key={idx} link={link} />
             ))}
+            <div className="flex gap-2 mt-1 items-center">
+            <IconArrowLeft className="text-red-700 dark:text-neutral-200 h-5 w-5 shrink-0" />
+            <button className="text-red-700 hover:text-white transition-colors duration-300 ease-in-out text-sm font-semibold"
+            onClick={() => {
+              signOut()
+              redirect("/")
+            }}
+            >Logout</button>
+            </div>
+           
           </div>
         </div>
         <div>
