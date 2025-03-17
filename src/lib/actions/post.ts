@@ -19,12 +19,22 @@ export async function CreatePost( listId: string, description? : string) {
     }
 
     try {
+
+
+
         const res = await prisma.todoList.findUnique({
             where : {
                 id : listId
             }, 
             include : {
-                tasks : true ,
+                tasks : {
+                    where : {
+                        completed : true
+                    },
+                    select : {
+                        title : true,
+                    }
+                } ,
                 creator : {
                     select : {
                         username : true
@@ -39,20 +49,52 @@ export async function CreatePost( listId: string, description? : string) {
             }
         }
 
-        const tasks = res?.tasks;
-        const username = res?.creator.username;
-        const title = res?.Title;
+        
 
+        const username = res?.creator.username;
+        const tasks = res?.tasks 
+
+        const data = {
+            tasks : tasks.map(t => t.title)
+        }
+
+        // check for if a post already exists
+        const findPost = await prisma.posts.findUnique({
+            where : {
+                TodoId : listId
+            }
+        })
+
+        if (findPost) {
+            if (!description) {
+                // replace this with prod url
+             const res = await axios.post("http://127.0.0.1:8000/gen-tweet", data) 
+             console.log("response :", res.data)
+             description = res.data.tweet; 
+            }
+
+           const res = await prisma.posts.update({
+                where : {
+                    TodoId : listId
+                } ,
+                data : {
+                    description : description ? description : "tweet gen down"
+                }
+            })
+
+            return {
+                 msg : "post updated",
+                 description,
+                 post : res.id
+            }
+            
+        }
         
 
         if (!description) {
-            // description = `Completed ${tasks?.length} of my list ${title}. These included ${tasks?.map((t)=> {
-            //     t.description
-            // })}`
-
-            // replace this with prod url
-         const res = await axios.post("http://127.0.0.1:8000/gen-tweet") as {tweet : string}
-         description = res.tweet; 
+         const res = await axios.post("http://127.0.0.1:8000/gen-tweet", data) 
+         console.log("response :", res.data)
+         description = res.data.tweet; 
         }
  
         if(!res?.completed){
@@ -63,7 +105,7 @@ export async function CreatePost( listId: string, description? : string) {
 
         const post = await prisma.posts.create({
             data : {
-                description : description,
+                description : description ? description : "tweet gen down",
                 postedAt : new Date(),
                 posterId : userId,
                 TodoId : listId
@@ -74,7 +116,8 @@ export async function CreatePost( listId: string, description? : string) {
             msg : "post created",
             status : 200, 
             id : post.id,
-            username
+            username,
+            description
         }
     } catch (error) {
         console.log(error); 
@@ -104,8 +147,18 @@ export async function getAllPosts() {
             }
         })
 
-        // can return better types
-        return posts
+        
+        const postings = posts.map(p => {
+        const id = p.id
+        const desc =  p.description
+
+        return {
+            id ,
+            desc
+        }
+        })
+
+        return postings;
         
     } catch (error) {
         console.log(error); 
@@ -146,5 +199,30 @@ export async function deletePost(postId : string) {
             msg : "some error occured", 
             status : 502
         }
+    }
+}
+
+export async function Posts() {
+    try {
+        const post = await prisma.posts.findMany(
+            {
+                include : {
+                    User : {
+                        select : {
+                            username : true
+                        }
+                    },
+                    Todo : {
+                        select : {
+                            Title : true
+                        }
+                    }
+                }
+            }
+        );
+
+        return post
+    } catch (error) {
+        
     }
 }

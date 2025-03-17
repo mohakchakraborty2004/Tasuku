@@ -8,24 +8,32 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CheckCircle, ListChecks } from "lucide-react"
 
 type CompletionData = {
-    EndTime: Date | null
-    completedTasks: number
-    TotalTasks: number
-  }
+  EndTime: Date | null
+  completedTasks: number
+  TotalTasks: number
+}
 
 interface TaskCompletionSummaryProps {
-  data: CompletionData // Expecting a single object now
+  data: CompletionData[] // Accepting an array of CompletionData objects
 }
 
 export default function TaskCompletionSummary({ data }: TaskCompletionSummaryProps) {
   const [period, setPeriod] = useState("week")
 
-  // Calculate summary statistics
-  const totalTasks = data.TotalTasks || 0
-  const totalCompleted = data.completedTasks || 0
-  const completionRate = data.TotalTasks > 0 ? Math.round((data.completedTasks / data.TotalTasks) * 100) : 0;
-  const mostProductiveDay = data.EndTime ? new Date(data.EndTime).toLocaleDateString("en-US") : "N/A"; 
+ 
+  const totalTasks = data.reduce((sum, entry) => sum + (entry.TotalTasks || 0), 0)
+  const totalCompleted = data.reduce((sum, entry) => sum + (entry.completedTasks || 0), 0)
 
+ 
+  const completionRate = totalTasks > 0 ? Math.round((totalCompleted / totalTasks) * 100) : 0
+
+  
+  const mostProductiveEntry = data.reduce((best, entry) =>
+    (entry.completedTasks || 0) > (best?.completedTasks || 0) ? entry : best, data[0])
+
+  const mostProductiveDay = mostProductiveEntry?.EndTime
+    ? new Date(mostProductiveEntry.EndTime).toLocaleDateString("en-US", { weekday: "long" })
+    : "N/A"
 
   return (
     <Card className="bg-black text-white">
@@ -34,78 +42,30 @@ export default function TaskCompletionSummary({ data }: TaskCompletionSummaryPro
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="week" className="space-y-4">
-          <TabsList className="">
-            <TabsTrigger className="bg-black text-white" value="week">This Week</TabsTrigger>
-            <TabsTrigger className="bg-black text-white" value="month">This Month</TabsTrigger>
-            <TabsTrigger className="bg-black text-white" value="year">This Year</TabsTrigger>
+          <TabsList>
+            <TabsTrigger className="bg-black text-white m-1" value="week">This Week</TabsTrigger>
+            <TabsTrigger className="bg-black text-white m-1" value="month">This Month</TabsTrigger>
+            <TabsTrigger className="bg-black text-white m-1" value="year">This Year</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="week" className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <StatsCard
-                icon={<CheckCircle className="h-4 w-4 text-green-500" />}
-                title="Completion Rate"
-                value={`${completionRate}%`}
-                description="Tasks completed this week"
-              />
-              <StatsCard
-                icon={<ListChecks className="h-4 w-4 text-blue-500" />}
-                title="Most Productive Day"
-                value={
-                  data.EndTime
-                    ? new Date(data.EndTime).toLocaleDateString("en-US", { weekday: "long" })
-                    : "N/A"
-                }
-                description={`${data.completedTasks} tasks completed`}
-              />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="month" className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <StatsCard
-                icon={<CheckCircle className="h-4 w-4 text-green-500" />}
-                title="Completion Rate"
-                value={`${completionRate}%`}
-                description="Tasks completed this month"
-              />
-              <StatsCard
-                icon={<ListChecks className="h-4 w-4 text-blue-500" />}
-                title="Most Productive Day"
-                value={
-                  data.EndTime
-                    ? new Date(data.EndTime).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : "N/A"
-                }
-                description={`${data.completedTasks} tasks completed`}
-              />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="year" className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <StatsCard
-                icon={<CheckCircle className="h-4 w-4 text-green-500" />}
-                title="Completion Rate"
-                value={`${completionRate}%`}
-                description="Tasks completed this year"
-              />
-              <StatsCard
-                icon={<ListChecks className="h-4 w-4 text-blue-500" />}
-                title="Most Productive Day"
-                value={
-                  data.EndTime
-                    ? new Date(data.EndTime).toLocaleDateString("en-US", { month: "long", day: "numeric" })
-                    : "N/A"
-                }
-                description={`${data.completedTasks} tasks completed`}
-              />
-            </div>
-          </TabsContent>
+          {["week", "month", "year"].map((timeframe) => (
+            <TabsContent key={timeframe} value={timeframe} className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <StatsCard
+                  icon={<CheckCircle className="h-4 w-4 text-green-500" />}
+                  title="Completion Rate"
+                  value={`${completionRate}%`}
+                  description={`Tasks completed this ${timeframe}`}
+                />
+                <StatsCard
+                  icon={<ListChecks className="h-4 w-4 text-blue-500" />}
+                  title="Most Productive Day"
+                  value={mostProductiveDay}
+                  description={`${mostProductiveEntry?.completedTasks || 0} tasks completed`}
+                />
+              </div>
+            </TabsContent>
+          ))}
         </Tabs>
       </CardContent>
     </Card>

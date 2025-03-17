@@ -107,7 +107,8 @@ export async function fetchActive() {
     try {
         const response = await prisma.todoList.findFirst({
             where : {
-                creatorId : userId
+                creatorId : userId,
+                completed : false
             }, 
             select : {
                 id : true,
@@ -165,12 +166,27 @@ export async function allLists() {
         const Lists = await prisma.todoList.findMany({
             where : {
                 creatorId : userId
+            } ,
+            include : {
+                tasks : true
             }
         })
 
-        // return better format 
+        const result = Lists.map(list => {
+            //const totalTasks = list.tasks.length
+            const completedTasks = list.tasks.filter(t => t.completed).length
 
-        return Lists;
+            return {
+              completedTasks
+            }
+        })
+
+
+        return {
+            totalLists : Lists.length, 
+            totalTasks : result 
+        }
+
     } catch (error) {
         console.log (error); 
         return {
@@ -191,7 +207,7 @@ export async function completedLists() {
     }
 
     try {
-        const Lists = await prisma.todoList.findFirst({
+        const Lists = await prisma.todoList.findMany({
             where : {
                 creatorId : userId,
                 completed : true
@@ -202,16 +218,19 @@ export async function completedLists() {
             }
         })
 
-        const tasks = Lists?.tasks
-        const completedTasks = tasks?.filter(t => t.completed)
-
+        const result = Lists.map(list => {
+            const totalTasks = list.tasks.length
+            const completedTasks = list.tasks.filter(t => t.completed).length
 
             return {
-                msg: "fetched",
-                EndTime: Lists?.EndTime ? new Date(Lists.EndTime) : null, // Convert to Date
-                completedTasks: completedTasks?.length,
-                TotalTasks: tasks?.length
-            };
+                msg : "fetched",
+                EndTime : list.EndTime ? new Date(list.EndTime) : null,
+                completedTasks : completedTasks,
+                TotalTasks : totalTasks
+            }
+        })
+
+            return result;
             
        
     } catch (error) {

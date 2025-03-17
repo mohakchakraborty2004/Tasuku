@@ -1,5 +1,6 @@
 "use client"
 
+import { CreatePost } from "@/lib/actions/post";
 import { updateList } from "@/lib/actions/todo";
 import { useState } from "react";
 
@@ -15,6 +16,8 @@ onClick={async()=> {
     const res = await updateList(id);
     console.log(res.msg)
     setListupdate(false)
+    const post = await CreatePost(id)
+    console.log((post.description));
 }}
 >{listUpdate ? "wait..." : "Complete"}</button>
 </div>

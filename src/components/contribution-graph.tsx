@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { format, startOfYear, endOfYear, eachDayOfInterval, isSameDay, parseISO } from "date-fns"
+import { format, startOfYear, endOfYear, eachDayOfInterval, isSameDay } from "date-fns"
 import { Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -10,33 +10,26 @@ import { completedLists } from "@/lib/actions/todo"
 import TaskCompletionSummary from "./task-completion-summary"
 
 export default function ContributionGraph() {
-  const [completedData, setCompletedData] = useState<{
-    EndTime: Date | null;
-    completedTasks: number;
-    TotalTasks: number;
-}>({
-    EndTime: null, 
-    completedTasks: 0,
-    TotalTasks: 0
-});
+  const [completedData, setCompletedData] = useState<
+    { EndTime: Date | null; completedTasks: number; TotalTasks: number }[]
+  >([])
   const [loading, setLoading] = useState(true)
-
 
   const currentYear = new Date().getFullYear()
   const startDate = startOfYear(new Date(currentYear, 0, 1))
-  const endDate = endOfYear(new Date(currentYear, 11, 31)) // Fixed end of year calculation
+  const endDate = endOfYear(new Date(currentYear, 11, 31))
   const days = eachDayOfInterval({ start: startDate, end: endDate })
 
   useEffect(() => {
     async function fetchData() {
       try {
         const result = await completedLists()
-        if (result.EndTime && result.msg === "fetched") {
-          setCompletedData({
-            EndTime: result.EndTime || null,
-            completedTasks: result.completedTasks || 0,
-            TotalTasks: result.TotalTasks || 0
-          })
+        if (Array.isArray(result)) {
+          setCompletedData(result.map(item => ({
+            EndTime: item.EndTime ? new Date(item.EndTime) : null,
+            completedTasks: item.completedTasks || 0,
+            TotalTasks: item.TotalTasks || 0
+          })))
         }
       } catch (error) {
         console.error("Error fetching completed lists:", error)
@@ -48,25 +41,20 @@ export default function ContributionGraph() {
   }, [])
 
   const isCompletedDay = (day: Date) => {
-    if (!completedData.EndTime) return false;
-  
-    const completedDate = new Date(completedData.EndTime);
-    console.log(isSameDay(day, completedDate)) 
-    return isSameDay(day, completedDate); // Compare correctly
-  };
-  
-  
-  const getColorIntensity = (day: Date) => {
-    if (isCompletedDay(day)) {
-      const ratio = completedData.completedTasks / (completedData.TotalTasks || 1)
+    return completedData.some(({ EndTime }) => EndTime && isSameDay(day, EndTime))
+  }
 
-      if (ratio === 0) return "bg-gray-100 dark:bg-gray-800"
-      if (ratio <= 0.25) return "bg-green-100 dark:bg-green-900"
-      if (ratio <= 0.5) return "bg-green-300 dark:bg-green-700"
-      if (ratio <= 0.75) return "bg-green-500 dark:bg-green-500"
-      return "bg-green-700 dark:bg-green-300"
-    }
-    return "bg-gray-100 dark:bg-gray-800"
+  const getColorIntensity = (day: Date) => {
+    const taskData = completedData.find(({ EndTime }) => EndTime && isSameDay(day, EndTime))
+    if (!taskData) return "bg-gray-100 dark:bg-gray-800"
+
+    const ratio = taskData.completedTasks / (taskData.TotalTasks || 1)
+
+    if (ratio === 0) return "bg-gray-100 dark:bg-gray-800"
+    if (ratio <= 0.25) return "bg-green-100 dark:bg-green-900"
+    if (ratio <= 0.5) return "bg-green-300 dark:bg-green-700"
+    if (ratio <= 0.75) return "bg-green-500 dark:bg-green-500"
+    return "bg-green-700 dark:bg-green-300"
   }
 
   const weeks: (Date | null)[][] = []
@@ -90,7 +78,7 @@ export default function ContributionGraph() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium">Contribution Activity ({currentYear})</h3>
+        <h3 className="text-sm font-medium">Contribution Activity <span className="text-green-700 font-extrabold">({currentYear})</span></h3>
 
         <TooltipProvider>
           <Tooltip>
@@ -114,13 +102,14 @@ export default function ContributionGraph() {
         <div className="overflow-x-auto pb-4">
           <div className="flex">
             <div className="grid gap-1 mr-2" style={{ gridTemplateRows: "repeat(7, minmax(0, 1fr))" }}>
-              <span className="h-3 text-xs text-muted-foreground flex items-center">Mon</span>
+              <span className="h-3 text-xs text-muted-foreground flex items-center">Sun</span>
+              <span className="h-3 text-xs text-muted-foreground flex items-center">Mon</span> 
+              <span className="h-3 text-xs text-muted-foreground flex items-center">Tue</span>
               <span className="h-3 text-xs text-muted-foreground flex items-center">Wed</span>
+              <span className="h-3 text-xs text-muted-foreground flex items-center">Thu</span> 
               <span className="h-3 text-xs text-muted-foreground flex items-center">Fri</span>
-              <span className="h-3"></span>
-              <span className="h-3"></span>
-              <span className="h-3"></span>
-              <span className="h-3"></span>
+              <span className="h-3 text-xs text-muted-foreground flex items-center">Sat</span>
+              
             </div>
 
             <div className="grid auto-cols-min grid-flow-col gap-1">
@@ -137,7 +126,13 @@ export default function ContributionGraph() {
                             <div className="text-xs">
                               <p className="font-medium">{format(day, "MMM d, yyyy")}</p>
                               {isCompletedDay(day) ? (
-                                <p>{completedData.completedTasks} of {completedData.TotalTasks} tasks completed</p>
+                                completedData
+                                  .filter(({ EndTime }) => EndTime && isSameDay(day, EndTime))
+                                  .map((data, index) => (
+                                    <p key={index}>
+                                      {data.completedTasks} of {data.TotalTasks} tasks completed
+                                    </p>
+                                  ))
                               ) : (
                                 <p>No tasks completed</p>
                               )}

@@ -21,7 +21,7 @@ export default function SidebarDemo() {
     },
     {
       label: "Manage Todos",
-      href: "/profile",
+      href: "/todo",
       icon: <IconSettings className="text-white dark:text-neutral-200 h-5 w-5 shrink-0" />,
     },
     {
@@ -46,16 +46,10 @@ export default function SidebarDemo() {
         <div>
           <SidebarLink
             link={{
-              label: "Mochakrs",
+              label: "built by mochakrs",
               href: "#",
               icon: (
-                <Image
-                  src=""
-                  className="h-7 w-7 shrink-0 rounded-full"
-                  width={50}
-                  height={50}
-                  alt="Avatar"
-                />
+               <div className="bg-white h-6 w-6 rounded-full"></div>
               ),
             }}
           />

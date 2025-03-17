@@ -3,6 +3,7 @@
 import { addTask, createList, deleteTask, fetchActive, updateList, updateTask } from "@/lib/actions/todo";
 import {  useEffect, useState } from "react";
 import Complete from "./completeListBtn";
+import Delete from "./deleteListBtn";
 
 export default function ListMaker() {
 
@@ -39,9 +40,10 @@ export default function ListMaker() {
             // if (titles) setFetchTask(titles);
             if (tasks) setFetchTask(tasks)
             setCompleted(false)
+            setRefresh(false)
         }
         fetch()
-    }, [mssg, completed])
+    }, [mssg, completed, refresh,msg])
 
 
     return (
@@ -90,6 +92,7 @@ export default function ListMaker() {
                             const res = await addTask(task, id);
                             setMssg(res.msg);
                             setLoading(false)
+                            setMssg("");
                         }}
                         disabled={isLoading}
                     >{isLoading ? 'adding Task' : 'Add Task'}</button>
@@ -104,7 +107,11 @@ export default function ListMaker() {
                 <div className="flex flex-col"> 
                     <div className="flex gap-3 justify-between">
                     <h1 className="text-black font-bold text-3xl">Your Active List and Tasks</h1>
-                    <button className="bg-blue-900 text-white p-2 rounded-3xl">Refresh</button>
+                    <button className="bg-blue-900 text-white p-2 rounded-3xl"
+                    onClick={()=> {
+                        setRefresh(true)
+                    }}
+                    >Refresh</button>
                     </div>
                     
                     <div className=" bg-black text-white flex flex-col w-auto gap-3 p-6 rounded-2xl my-6">
@@ -146,13 +153,9 @@ export default function ListMaker() {
                     
                     <Complete id={id}></Complete>
                
-                    <button className="bg-red-700 text-white p-3 rounded-lg font-bold w-80"
-                    // disabled={isId}
-                    onChange={()=> {
-
-                    }}
-                     >delete</button>
+                    <Delete id={id}></Delete>
                     </div>
+                    <p className="text-red-800 m-1">Please refresh once when you complete/delete a list to reflect changes.(will fix it in further updates)</p>
                    
                 </div>
 
